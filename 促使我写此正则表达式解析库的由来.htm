@@ -1,0 +1,954 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=gb2312">
+<title>促使我写此正则表达式解析库的由来</title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:宋体;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"\@宋体";
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10.5pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+ /* Page Definitions */
+ @page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 10.3pt 72.0pt 18.0pt;
+	layout-grid:15.6pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=ZH-CN link=blue vlink=purple style='text-justify-trim:punctuation'>
+
+<div class=Section1 style='layout-grid:15.6pt'>
+
+<p class=MsoNormal><span lang=EN-US><a href="#初衷"><span style='font-family:
+宋体'>初衷</span></a></span></p>
+
+<p class=MsoNormal><span lang=EN-US><a href="#我想说的"><span style='font-family:
+宋体'>我想说的</span></a></span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><a name=初衷><span style='font-family:宋体'>大家好</span></a><span
+style='font-family:宋体'>！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>我所知道的正则表达式库有：</span><span lang=EN-US>boost</span><span
+style='font-family:宋体'>的，</span><span lang=EN-US>GNU</span><span
+style='font-family:宋体'>的，</span><span lang=EN-US>VC7</span><span
+style='font-family:宋体'>带的</span><span lang=EN-US>ATL</span><span
+style='font-family:宋体'>中的和微软发布的</span><span lang=EN-US>greta</span><span
+style='font-family:宋体'>。我使用过后三种，</span><span lang=EN-US>greta</span><span
+style='font-family:宋体'>使用时间最短（才两天）。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>现在我来说说我的感受：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GNU</span><span
+style='font-family:宋体'>的正则表达式根本就不支持多字节码，设置连</span><span lang=EN-US>UNICODE</span><span
+style='font-family:宋体'>都不支持，在</span><span lang=EN-US>parse</span><span
+style='font-family:宋体'>阶段就会非法操作。在软件全球化的今天，实在不是一个好现象。优点是支持的语法完备。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ATL</span><span
+style='font-family:宋体'>中的正则表达式不完全支持多字节码，可以完善的支持</span><span lang=EN-US>UNICODE</span><span
+style='font-family:宋体'>。不过，此正则表达式书写非常清晰，没有用到</span><span lang=EN-US>STL</span><span
+style='font-family:宋体'>里面任何高深的东西，也没有用到模板中特别高深的东西</span><span lang=EN-US>(</span><span
+style='font-family:宋体'>我认为这才是</span><span lang=EN-US>C++</span><span
+style='font-family:宋体'>的发展之道，毕竟，聪明人是少数——大部分是平庸的人，曲高寡合，总有一天会被大多数程序员抛弃</span><span
+lang=EN-US>,</span><span style='font-family:宋体'>剩下一帮高手顾影自怜），所以，通过非常微小和容易的更改就可以完善支持多字节码。缺点是不支持</span><span
+lang=EN-US>{n,m}</span><span style='font-family:宋体'>语法，不支持递归语法，如：</span><span
+lang=EN-US>&quot;([^\\&quot;]*(\\.)*[^\\&quot;]*)*&quot;</span><span
+style='font-family:宋体'>。最后一个</span><span lang=EN-US>*</span><span
+style='font-family:宋体'>是不被支持的。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; greta</span><span
+style='font-family:宋体'>能完善的支持单字节码和</span><span lang=EN-US>UNICODE</span><span
+style='font-family:宋体'>，语法也完善，而且据说普遍情况下速度也快，不过，把部分实现放</span><span lang=EN-US>cpp</span><span
+style='font-family:宋体'>里导致不能同时使用单字节码和</span><span lang=EN-US>UNICODE</span><span
+style='font-family:宋体'>编码，</span><span lang=EN-US>posix</span><span
+style='font-family:宋体'>和</span><span lang=EN-US>perl</span><span
+style='font-family:宋体'>语法，解决办法还算简单：把</span><span lang=EN-US>cpp</span><span
+style='font-family:宋体'>改名为</span><span lang=EN-US>inl</span><span
+style='font-family:宋体'>，在</span><span lang=EN-US>.h</span><span
+style='font-family:宋体'>里</span><span lang=EN-US>include</span><span
+style='font-family:宋体'>这个</span><span lang=EN-US>inl</span><span
+style='font-family:宋体'>，再修改一点别的东西就可。问题是，它没有支持多字节码的实现，我仔细看看了，似乎通过自己写一个多字节码的迭代子，可以解决这个问题，因为他支持</span><span
+lang=EN-US>basic_string</span><span style='font-family:宋体'>。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>接下来的问题是：</span><span lang=EN-US>STL</span><span
+style='font-family:宋体'>如何支持多字节码的？我没有在</span><span lang=EN-US>SGI-STL</span><span
+style='font-family:宋体'>，</span><span lang=EN-US>STLPort453</span><span
+style='font-family:宋体'>中找到关于多字节码的东西。</span><span lang=EN-US>basic_string</span><span
+style='font-family:宋体'>默认只实现了</span><span lang=EN-US>char,wchar_t</span><span
+style='font-family:宋体'>的</span><span lang=EN-US>base_string</span><span
+style='font-family:宋体'>。而要自己实现一个迭代子，我又不知道如何下手。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>我现在的需求是：</span><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>需要正则表达式支持类似这样的语法：“</span><span lang=EN-US>/</span><span
+style='font-family:宋体'>汉字</span><span lang=EN-US>[</span><span
+style='font-family:宋体'>　</span><span lang=EN-US> ]+[^</span><span
+style='font-family:宋体'>　，</span><span lang=EN-US> ,]+[</span><span
+style='font-family:宋体'>　</span><span lang=EN-US> ]*[</span><span
+style='font-family:宋体'>，</span><span lang=EN-US>,][</span><span
+style='font-family:宋体'>　</span><span lang=EN-US> ]*[^</span><span
+style='font-family:宋体'>　，</span><span lang=EN-US> ,]+</span><span
+style='font-family:宋体'>”以匹配“／汉字　兰征鹏　，正则表达式”。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>使用</span><span lang=EN-US>STL</span><span
+style='font-family:宋体'>进行字符串搜索都有问题，比如在一篇文章中搜索“正则”，很可能就把三个汉字的中间四个字节匹配上了。出现这样的情况，让人哭笑不得。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>有这方面经验的或对</span><span lang=EN-US>STL</span><span
+style='font-family:宋体'>比较熟悉的同仁，请勿吝啬指导</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　</span><span
+lang=EN-US>2004-06-02</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span><span style='font-family:宋体'>在</span><span
+lang=EN-US>C/C++</span><span style='font-family:宋体'>中如果想要使用与</span><span
+lang=EN-US>Perl</span><span style='font-family:宋体'>兼容的</span><span lang=EN-US>regexp</span><span
+style='font-family:宋体'>库，一个选择是</span><span lang=EN-US>Boost</span><span
+style='font-family:宋体'>，另一个选择是</span><span lang=EN-US>PCRE</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>库。</span><span lang=EN-US>Boost</span><span
+style='font-family:宋体'>中的</span><span lang=EN-US>regex</span><span
+style='font-family:宋体'>算法最近做了改近，平均效率比以前的版本提高了</span><span lang=EN-US>10</span><span
+style='font-family:宋体'>倍，不过用起</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>来可能比较麻烦。</span><span
+lang=EN-US>PCRE</span><span style='font-family:宋体'>已经很成熟了，</span><span
+lang=EN-US>Apache/Postfix/PHP/Python</span><span style='font-family:宋体'>都用它。我认为应</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>该优先考虑。不过我自己没有在</span><span
+lang=EN-US>Windows</span><span style='font-family:宋体'>下编译过，不是很有把握。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>See www.pcre.org</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我个人很喜欢</span><span lang=EN-US>Ruby</span><span
+style='font-family:宋体'>中的正则表达式功能，功能强，速度也很不错。因为</span><span lang=EN-US>Ruby</span><span
+style='font-family:宋体'>是日本人发</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>明的，处理东亚大字符集没有任何问题。</span><span
+lang=EN-US>Ruby</span><span style='font-family:宋体'>与</span><span lang=EN-US>C/C++</span><span
+style='font-family:宋体'>接口很容易，但是为了这个小功</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>能加入</span><span lang=EN-US>Ruby</span><span
+style='font-family:宋体'>，似乎有点小题大做了。</span><span lang=EN-US>Perl</span><span
+style='font-family:宋体'>我不熟悉。</span><span lang=EN-US>Lua</span><span
+style='font-family:宋体'>独创了一套模式匹配语法，而</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>且</span><span lang=EN-US>Lua</span><span
+style='font-family:宋体'>天生就是要嵌入到</span><span lang=EN-US>C/C++</span><span
+style='font-family:宋体'>中去的，性能比</span><span lang=EN-US>Perl/Ruby/Python</span><span
+style='font-family:宋体'>都快的多。</span><span lang=EN-US>Lua</span><span
+style='font-family:宋体'>的模式</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>匹配语法有点怪，解决</span><span
+lang=EN-US>lanzhengpeng</span><span style='font-family:宋体'>的问题好像是足够的，不过跟标准</span><span
+lang=EN-US>regex</span><span style='font-family:宋体'>语法完全</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>不同。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我个人的感觉，不如静下心来写一个</span><span
+lang=EN-US>iterator</span><span style='font-family:宋体'>，应该是很容易的。不过我也很久没干过</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>这种事情了，也就泛泛的说说算了。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>孟岩</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>发件人</span><span lang=EN-US>:&nbsp;&nbsp; kyo</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>发送时间</span><span lang=EN-US>:
+2004</span><span style='font-family:宋体'>年</span><span lang=EN-US>6</span><span
+style='font-family:宋体'>月</span><span lang=EN-US>2</span><span style='font-family:
+宋体'>日</span><span lang=EN-US> 11:19</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>收件人</span><span lang=EN-US>:
+'C++ Discuss Group'</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>主题</span><span lang=EN-US>: RE:
+[cpp]</span><span style='font-family:宋体'>正则表达式和多字节码的问题</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>兰兄的经历我很有经验，以前也曾经努力寻找一套好用的正则表达式的</span><span lang=EN-US>C++</span><span
+style='font-family:宋体'>库，然</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>而用过以后都不太满意。</span> </p>
+
+<p class=MsoNormal><span style='font-family:宋体'>正则表达式中公认的</span><span
+lang=EN-US>perl</span><span style='font-family:宋体'>是做的最好的（现在很多库都声称可以支持</span><span
+lang=EN-US>perl</span><span style='font-family:宋体'>的正则表达</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>式），比如懒惰匹配就很有用。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>如果兰兄不是必须用</span><span lang=EN-US>C++ </span><span
+style='font-family:宋体'>做的话，可以用内嵌</span><span lang=EN-US>python</span><span
+style='font-family:宋体'>引擎，然后用</span><span lang=EN-US>python</span><span
+style='font-family:宋体'>里的正则</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>表达式</span><span lang=EN-US>module
+re</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>按你的要求的话，需要使用</span><span
+lang=EN-US>python 2.4</span><span style='font-family:宋体'>以上版本，因为中文的</span><span
+lang=EN-US>unicode</span><span style='font-family:宋体'>在</span><span lang=EN-US>2.4</span><span
+style='font-family:宋体'>才支持（</span><span lang=EN-US>2.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>4</span><span style='font-family:宋体'>还没有</span><span
+lang=EN-US>release</span><span style='font-family:宋体'>。）</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp; </span><span style='font-family:
+宋体'>关于</span><span lang=EN-US>C++</span><span style='font-family:宋体'>汉字查找的问题最近大话西游也遇到，因为要限制经济频道里的说话必须包</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>含“卖”。要精确判断的</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>话，需要先把</span><span lang=EN-US>char*</span><span
+style='font-family:宋体'>或</span><span lang=EN-US>string</span><span
+style='font-family:宋体'>的字符串先用</span><span lang=EN-US>MultiByteToWideChar</span><span
+style='font-family:宋体'>转为</span><span lang=EN-US>&nbsp; WCHAR</span><span
+style='font-family:宋体'>或</span></p>
+
+<p class=MsoNormal><span lang=EN-US>wstring, </span><span style='font-family:
+宋体'>然后再查找。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>希望对你有用。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>孟岩</span><span lang=EN-US>,</span><span
+style='font-family:宋体'>您好！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>======= 2004-06-02 13:22:29 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;See www.pcre.org</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>多谢！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;</span><span style='font-family:宋体'>我个人的感觉，不如静下心来写一个</span><span
+lang=EN-US>iterator</span><span style='font-family:宋体'>，应该是很容易的。不过我也很久没干过</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;</span><span style='font-family:宋体'>这种事情了，也就泛泛的说说算了。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>我着手写了一下，似乎我写一个</span><span lang=EN-US>iterator</span><span
+style='font-family:宋体'>不起作用，需要把</span><span lang=EN-US>base_string</span><span
+style='font-family:宋体'>也一起写了。而且有个很大的问题：</span><span lang=EN-US>++</span><span
+style='font-family:宋体'>操作跟</span><span lang=EN-US>--</span><span
+style='font-family:宋体'>操作不一致。</span><span lang=EN-US>++</span><span
+style='font-family:宋体'>的时候我可以很容易判断当前字节是否是多字节吗，从而地址</span><span lang=EN-US>+1</span><span
+style='font-family:宋体'>还是</span><span lang=EN-US>+2</span><span
+style='font-family:宋体'>。但是，</span><span lang=EN-US>--</span><span
+style='font-family:宋体'>的时候就不是那么好做了（考虑到支持如</span><span lang=EN-US>GIB5</span><span
+style='font-family:宋体'>——其汉字的后半字节编码跟英文有重叠），如果单纯的地址</span><span lang=EN-US>-1</span><span
+style='font-family:宋体'>，会不会出现问题，这个迭代子是否还是</span><span lang=EN-US>random_iterator?</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>= = = = = = = = = = = = = = = = = = = =</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　</span><span
+lang=EN-US>2004-06-02</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>发送时间</span><span lang=EN-US>:
+2004</span><span style='font-family:宋体'>年</span><span lang=EN-US>6</span><span
+style='font-family:宋体'>月</span><span lang=EN-US>2</span><span style='font-family:
+宋体'>日</span><span lang=EN-US> 15:53</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>收件人</span><span lang=EN-US>:
+C++ Discuss Group</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>主题</span><span lang=EN-US>:
+Re[2]: </span><span style='font-family:宋体'>答复</span><span lang=EN-US>: [cpp]</span><span
+style='font-family:宋体'>正则表达式和多字节码的问题</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Hello lanzhengpeng,</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Wednesday, June 2, 2004</span><span
+lang=EN-US>, </span><span lang=EN-US>3:38:11 PM</span><span lang=EN-US>, you
+wrote:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>还是转一下吧</span><span lang=EN-US>,
+</span><span style='font-family:宋体'>转成</span><span lang=EN-US> wstring.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我想到另外一个问题</span><span
+lang=EN-US>, </span><span style='font-family:宋体'>也是我前段干过的</span><span
+lang=EN-US>.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>就是英文有</span><span lang=EN-US>
+stricmp, </span><span style='font-family:宋体'>中文是否也应该有一个模糊查找</span><span
+lang=EN-US>. </span><span style='font-family:宋体'>比如忽略掉同音字的</span><span
+lang=EN-US>.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>有时候也不用忽略所有同音字，高频字一般即使同音也不会混用</span><span
+lang=EN-US>. </span><span style='font-family:宋体'>一些不常用到的字容</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>易用同音别字代替</span><span
+lang=EN-US>.</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>另外汉字有多音字的问题，使这种模糊匹配的算法变得复杂。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我曾经花了一下午的时间整理资料，把大部分</span><span
+lang=EN-US> GBK </span><span style='font-family:宋体'>字集里的汉字的汉语拼音都列出来</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>的</span><span lang=EN-US>(</span><span
+style='font-family:宋体'>包括声调</span><span lang=EN-US>)</span><span
+style='font-family:宋体'>，包括一字多音的。</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>还有一种最常用的</span><span
+lang=EN-US> 1000 </span><span style='font-family:宋体'>多字的按使用频率排列的表。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>有没有人感兴趣呀</span><span
+lang=EN-US> :)</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Best regards,</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;Cloudwu</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>[</span><span style='font-family:宋体'>一人之断制</span><span
+lang=EN-US>, </span><span style='font-family:宋体'>所见有限</span><span lang=EN-US>, </span><span
+style='font-family:宋体'>犹目之一瞥</span><span lang=EN-US>, </span><span
+style='font-family:宋体'>岂能尽万物之情乎</span><span lang=EN-US>]</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; ======= 2004-06-02 11:18:58 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&nbsp; </span><span
+style='font-family:宋体'>关于</span><span lang=EN-US>C++</span><span
+style='font-family:宋体'>汉字查找的问题最近大话西游也遇到，因为要限制经济频道里的说话必须包含“卖”。要精确判断的</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;</span><span style='font-family:
+宋体'>话，需要先把</span><span lang=EN-US>char*</span><span style='font-family:宋体'>或</span><span
+lang=EN-US>string</span><span style='font-family:宋体'>的字符串先用</span><span
+lang=EN-US>MultiByteToWideChar</span><span style='font-family:宋体'>转为</span><span
+lang=EN-US>&nbsp; WCHAR</span><span style='font-family:宋体'>或</span><span
+lang=EN-US>wstring, </span><span style='font-family:宋体'>然后再查找。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &nbsp;&nbsp; </span><span
+style='font-family:宋体'>这样只能判断有和无，实际上我需要精确位置。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>是可以精确查找的呀。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span><span style='font-family:宋体'>另外是否可以嵌入其他东西：我觉得没有必要，实际那些脚本语言最后也通过</span><span
+lang=EN-US>C/C++</span><span style='font-family:宋体'>来做的，搞不好还就是用的我们已知的东西。而且正</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span><span style='font-family:宋体'>则表达式如此有用，以至于我到处都在使用——无论程序大小。如果为此在那些众多的程序中嵌入一个脚本，也是我所不愿意的。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>kyo,</span><span style='font-family:宋体'>您好！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>======= 2004-06-02 11:18:58 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&nbsp; </span><span style='font-family:
+宋体'>关于</span><span lang=EN-US>C++</span><span style='font-family:宋体'>汉字查找的问题最近大话西游也遇到，因为要限制经济频道里的说话必须包含“卖”。要精确判断的</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;</span><span style='font-family:宋体'>话，需要先把</span><span
+lang=EN-US>char*</span><span style='font-family:宋体'>或</span><span lang=EN-US>string</span><span
+style='font-family:宋体'>的字符串先用</span><span lang=EN-US>MultiByteToWideChar</span><span
+style='font-family:宋体'>转为</span><span lang=EN-US>&nbsp; WCHAR</span><span
+style='font-family:宋体'>或</span><span lang=EN-US>wstring, </span><span
+style='font-family:宋体'>然后再查找。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>这样只能判断有和无，实际上我需要精确位置。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>另外是否可以嵌入其他东西：我觉得没有必要，实际那些脚本语言最后也通过</span><span
+lang=EN-US>C/C++</span><span style='font-family:宋体'>来做的，搞不好还就是用的我们已知的东西。而且正则表达式如此有用，以至于我到处都在使用——无论程序大小。如果为此在那些众多的程序中嵌入一个脚本，也是我所不愿意的。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>= = = = = = = = = = = = = = = = = = = =</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　</span><span
+lang=EN-US>2004-06-02</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>用什么多字节，不但麻烦，效率又低，转换成</span><span
+lang=EN-US>unicode</span><span style='font-family:宋体'>再处理拉。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Hello lanzhengpeng,</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Thursday, June 3, 2004</span><span
+lang=EN-US>, </span><span lang=EN-US>9:24:58 AM</span><span lang=EN-US>, you
+wrote:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>l&gt; </span><span style='font-family:宋体'>用什么多字节，不但麻烦，效率又低，转换成</span><span
+lang=EN-US>unicode</span><span style='font-family:宋体'>再处理拉。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>l&gt; </span><span style='font-family:宋体'>大家都这么推荐，我着手做一下吧。多字及码到ＵＮＩＣＯＤＥ的位置影射也应该不难</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>为什么要转成</span><span lang=EN-US>
+unicode? </span><span style='font-family:宋体'>我觉得转成双字节就够了</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>多一步转换干什么</span><span
+lang=EN-US>?</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>-- </span></p>
+
+<p class=MsoNormal><span lang=EN-US>Best regards,</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;cloudwu</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>[</span><span style='font-family:宋体'>凡是有良好教养的人有一禁诫：勿发脾气</span><span
+lang=EN-US>]</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Analyst</span><span style='font-family:
+宋体'>，您好！</span> </p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>用什么多字节，不但麻烦，效率又低，转换成</span><span
+lang=EN-US>unicode</span><span style='font-family:宋体'>再处理拉。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>大家都这么推荐，我着手做一下吧。多字及码到ＵＮＩＣＯＤＥ的位置影射也应该不难</span></p>
+
+<p class=MsoNormal><span lang=EN-US>= = = = = = = = = = = = = = = = = = = = = =
+</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　　　　　　　　</span><span
+lang=EN-US>2004-06-03</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>kyo,</span><span style='font-family:宋体'>您好！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>======= 2004-06-02 18:47:24 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&gt; ======= 2004-06-02 11:18:58 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&gt; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&gt; &gt;&nbsp; </span><span
+style='font-family:宋体'>关于</span><span lang=EN-US>C++</span><span
+style='font-family:宋体'>汉字查找的问题最近大话西游也遇到，因为要限制经济频道里的说话必须包含“卖”。要精确判断的</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&gt; &gt;</span><span style='font-family:
+宋体'>话，需要先把</span><span lang=EN-US>char*</span><span style='font-family:宋体'>或</span><span
+lang=EN-US>string</span><span style='font-family:宋体'>的字符串先用</span><span
+lang=EN-US>MultiByteToWideChar</span><span style='font-family:宋体'>转为</span><span
+lang=EN-US>&nbsp; WCHAR</span><span style='font-family:宋体'>或</span><span
+lang=EN-US>wstring, </span><span style='font-family:宋体'>然后再查找。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;&gt;  </span><span style='font-family:
+宋体'>这样只能判断有和无，实际上我需要精确位置。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt;</span><span style='font-family:宋体'>是可以精确查找的呀。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>我曾经做过一个小工具，提取并修改代码中的文字部分，并将文字汇总到一个文件里，需要本地化的时候，修改这个文件就可。比如：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LANGUAGE(0,&quot;</span><span
+style='font-family:宋体'>我曾经做过一个小工具</span><span lang=EN-US>&quot;);</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>正则表达式应该很容易抽取出</span><span lang=EN-US>0</span><span
+style='font-family:宋体'>，并且将</span><span lang=EN-US>0</span><span
+style='font-family:宋体'>替换成一个其他的数值（就是后面的字符在文件中排序的编号）。如果转换过后，我怎么知道原来的位置呢？</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>= = = = = = = = = = = = = = = = = = = =</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　</span><span
+lang=EN-US>2004-06-03</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>大家好！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>近日空闲了，着手写个正则表达式解析的东西吧，不求速度，只求满足我的要求。在我完成一定阶段的编码后，会交付源代码给大家测试。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>现在问几个问题：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>“</span><span lang=EN-US>^</span><span style='font-family:
+宋体'>”作为匹配起始的时候：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>一、在单行模式下（即全文中可以包含换行符号“</span><span lang=EN-US>\n</span><span
+style='font-family:宋体'>”，但是“</span><span lang=EN-US>$</span><span
+style='font-family:宋体'>”不匹配“</span><span lang=EN-US>\n</span><span
+style='font-family:宋体'>”，而是匹配结束。同时，“</span><span lang=EN-US>.</span><span
+style='font-family:宋体'>”可匹配“</span><span lang=EN-US>\n</span><span
+style='font-family:宋体'>”），“</span><span lang=EN-US>^</span><span
+style='font-family:宋体'>”可否写在表达式的中间，如此必然没有任何可匹配的东西。这个时候是否作为语法错误？</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>二、在多行模式下，“</span><span lang=EN-US>^</span><span
+style='font-family:宋体'>”是作为匹配的起始地址还是说匹配“</span><span lang=EN-US>\n</span><span
+style='font-family:宋体'>”的后一个字符？我比较趋向于匹配起始地址</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>三、在多行模式下，“</span><span lang=EN-US>$</span><span
+style='font-family:宋体'>”可否匹配匹配串的结束？还是只匹配“</span><span lang=EN-US>\n|\r\n</span><span
+style='font-family:宋体'>”</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>四、“</span><span lang=EN-US>^$</span><span
+style='font-family:宋体'>”是否作为语法错误处理？如果不作为语法错误，是匹配一个空串还是什么都不匹配？</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>这些疑问，在各个正则表达式库或各个工具</span><span lang=EN-US>(</span><span
+style='font-family:宋体'>如</span><span lang=EN-US>VC</span><span
+style='font-family:宋体'>，</span><span lang=EN-US>UEdit)</span><span
+style='font-family:宋体'>都有不同的处理方案。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>另外</span><span lang=EN-US>,</span><span
+style='font-family:宋体'>我暂时没有找到正则表达式详细介绍的资料（如</span><span lang=EN-US>rfc</span><span
+style='font-family:宋体'>或编译原理的书籍），烦请哪位达人提供一份资料，中文最好，英语也可，其它语言不考虑。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>= = = = = = = = = = = = = = = = = = = =</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　致</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>礼！</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　</span><span
+lang=EN-US>lanzhengpeng</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>　　　　　　　　　　</span><span
+lang=EN-US>2004-06-05</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&gt; ======= 2004-06-02 11:18:58 </span><span
+style='font-family:宋体'>您在来信中写道：</span><span lang=EN-US>=======</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&gt; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&gt; &gt;&nbsp; </span><span
+style='font-family:宋体'>关于</span><span lang=EN-US>C++</span><span
+style='font-family:宋体'>汉字查找的问题最近大话西游也遇到，因为要限制经济频道里的说话必须包含“卖”。要精确判断的</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&gt; &gt;</span><span
+style='font-family:宋体'>话，需要先把</span><span lang=EN-US>char*</span><span
+style='font-family:宋体'>或</span><span lang=EN-US>string</span><span
+style='font-family:宋体'>的字符串先用</span><span lang=EN-US>MultiByteToWideChar</span><span
+style='font-family:宋体'>转为</span><span lang=EN-US>&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; WCHAR</span><span style='font-family:
+宋体'>或</span><span lang=EN-US>wstring, </span><span style='font-family:宋体'>然后再查找。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;&gt; &nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>这样只能判断有和无，实际上我需要精确位置。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &gt;</span><span style='font-family:
+宋体'>是可以精确查找的呀。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &nbsp;&nbsp; </span><span
+style='font-family:宋体'>我曾经做过一个小工具，提取并修改代码中的文字部分，并将文字汇总到一个文件里，需要本地化的时候，修改这个文件就可。比如：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &nbsp;&nbsp; LANGUAGE(0,&quot;</span><span
+style='font-family:宋体'>我曾经做过一个小工具</span><span lang=EN-US>&quot;);</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; &nbsp;&nbsp; </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&gt; </span><span style='font-family:宋体'>正则表达式应该很容易抽取出</span><span
+lang=EN-US>0</span><span style='font-family:宋体'>，并且将</span><span lang=EN-US>0</span><span
+style='font-family:宋体'>替换成一个其他的数值（就是后面的字符在文件中排序的编号）。如果转换过后，我怎么知道原来的位置</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>呢？</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>wchar </span><span style='font-family:宋体'>查找到位置后，然后把它逐个转换为</span><span
+lang=EN-US>char</span><span style='font-family:宋体'>不就知道了嘛，哈哈</span> <span
+style='font-family:宋体'>：</span><span lang=EN-US>B</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我是初学者，</span> <span
+style='font-family:宋体'>也来添乱：</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>一</span><span lang=EN-US>.</span><span
+style='font-family:宋体'>在单行模式下</span><span lang=EN-US>^&nbsp; $</span><span
+style='font-family:宋体'>都只表述位置概念</span><span lang=EN-US>(</span><span
+style='font-family:宋体'>开始，</span> <span style='font-family:宋体'>结束），</span> <span
+style='font-family:宋体'>而不匹配具体的任何字串，</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>所以</span><span lang=EN-US>$</span><span
+style='font-family:宋体'>当然不匹配</span><span lang=EN-US>&quot;\n&quot;</span><span
+style='font-family:宋体'>，</span><span lang=EN-US> ^</span><span
+style='font-family:宋体'>写在中间是可以匹配</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>的，</span> <span
+style='font-family:宋体'>比如我写</span><span lang=EN-US> a?^b&nbsp; </span><span
+style='font-family:宋体'>或者是</span><span lang=EN-US>a{0}^b</span><span
+style='font-family:宋体'>时，</span><span lang=EN-US> bcd</span><span
+style='font-family:宋体'>是可以匹配的，</span> <span style='font-family:宋体'>当然把开始位置的匹配</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>写到其他地方不是一个好习惯，</span> <span
+style='font-family:宋体'>但是也许也不应该禁止吧？</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>二</span><span lang=EN-US>.</span><span
+style='font-family:宋体'>多行模式下</span><span lang=EN-US>^</span><span
+style='font-family:宋体'>匹配</span><span lang=EN-US>&quot;\n&quot;</span><span
+style='font-family:宋体'>的下一个字符</span><span lang=EN-US>, </span><span
+style='font-family:宋体'>比如</span><span lang=EN-US>^\d </span><span
+style='font-family:宋体'>和</span><span lang=EN-US>abcd\n123</span><span
+style='font-family:宋体'>匹配，</span> <span style='font-family:宋体'>而</span><span
+lang=EN-US>$</span><span style='font-family:宋体'>匹配</span><span lang=EN-US>&quot;\n&quot;</span><span
+style='font-family:宋体'>的</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>上一个字符，</span> <span
+style='font-family:宋体'>比如</span><span lang=EN-US>is$ </span><span
+style='font-family:宋体'>和</span><span lang=EN-US>his\nhere</span><span
+style='font-family:宋体'>匹配</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>三</span><span lang=EN-US>.</span><span
+style='font-family:宋体'>不是很理解所说的，</span> <span style='font-family:宋体'>应该是指</span><span
+lang=EN-US>is$</span><span style='font-family:宋体'>是否和</span><span lang=EN-US>hr\nhis</span><span
+style='font-family:宋体'>这样的字串匹配吧？</span> <span style='font-family:宋体'>答案是</span><span
+lang=EN-US>yes</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>多行模式下使</span><span lang=EN-US>$</span><span
+style='font-family:宋体'>舆行的末尾匹配（而不止是字符串的末尾），</span><span lang=EN-US> ^</span><span
+style='font-family:宋体'>舆行的开始匹配</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>（而不止是字符串的开始）</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>四</span><span lang=EN-US>.</span><span
+style='font-family:宋体'>不应该判为非法，</span> <span style='font-family:宋体'>单行模式下</span><span
+lang=EN-US> ^$</span><span style='font-family:宋体'>匹配</span><span lang=EN-US>&quot;&quot;&nbsp;&nbsp;&nbsp;
+</span><span style='font-family:宋体'>多行模式下匹配</span><span lang=EN-US>&quot;aaa\n\naaa&quot;</span><span
+style='font-family:宋体'>（空行</span><span lang=EN-US>)</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>？？只用</span><span lang=EN-US>egrep</span><span
+style='font-family:宋体'>测试过</span><span lang=EN-US>^_^</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>书就有一本了，</span> <span
+style='font-family:宋体'>来可欣这边就可以看到啦</span><span lang=EN-US>...</span><span
+style='font-family:宋体'>《</span><span lang=EN-US>regular expression</span><span
+style='font-family:宋体'>》</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>_______________________________________________</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Cpp mailing list</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><a name=我想说的><span style='font-family:宋体'>我想说的</span></a></p>
+
+<p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'>我相信，这个世界上的正则表达式解析库远远不止我知道的这些，但是，愿意开源的就很少了。</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>开源的库其质量也是参差不齐，或着重点不同。特别引人注目的是，在所有这些已知的代码库中，</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>没有一个是中国程序员写的。我希望打破这种局面，并且注重功能和支持多字节码（不仅仅是</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>东亚大字符集），速度是其次——因为我的功底不够，对正则表达式不是非常熟悉，对有限自动机</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>也没有理解透彻。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>如果你要说我这个正则表达式语法不正统，那么，我会说你长得不像人——因为我才是标准的人样。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>请勿散播造车不必从轮子造起的论调，我有很多大道理，但我不愿意写。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>公司领导对这个开放代码持有异议，不过，由于此代码库没有用在公司任何项目上，并且我坚持</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>在家里完成代码的编码工作（这篇文章倒是在公司机器上写的），因此，此代码库不存在其他的版权纠纷，</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>你可以在遵守原始作者申明的前提下放心的分发、修改和使用。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>这个代码库必然还存在我不知道的缺陷——功能上的，安全上的，易用性上的。。。。。。不管如何，</span></p>
+
+<p class=MsoNormal><span style='font-family:宋体'>我希望你在拥有良好心态前提下，将你发现的缺陷和你的想法告诉我：</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a
+href="mailto:tearshark@eaglefly.com.cn">tearshark@eaglefly.com.cn</a></span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-family:宋体'>兰征鹏</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2004-6-16</span></p>
+
+</div>
+
+</body>
+
+</html>
