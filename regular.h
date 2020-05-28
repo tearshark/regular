@@ -141,7 +141,7 @@ public:
 
 	friend class re_pattern<TRAITS>;
 private:
-	void _repair(intptr_t offset){
+	void _repair(_W64 int offset){
 		m_Match.begin = reinterpret_cast<const re_char *>(reinterpret_cast<const char *>(m_Match.begin) + offset);
 		m_Match.end = reinterpret_cast<const re_char *>(reinterpret_cast<const char *>(m_Match.end) + offset);
 		

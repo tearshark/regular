@@ -14,7 +14,6 @@
 //-----------------------------------------------------------------------------
 
 #include <iostream>
-#include <fstream>
 #include <strstream>
 #include <string>
 
@@ -135,108 +134,107 @@ inline bool __IsCharEq(TCHAR c1,TCHAR c2)
 	return _totlower(c1) == _totlower(c2);
 }
 
-void test_re_swap()
+int main()
 {
-	const char* pszReplace =
-		"	m_fmCBI.createdate = sc->createdate;\r\n"
-		"	m_fmCBI.money = sc->money;\r\n"
-		"	m_fmCBI.fame = sc->fame;\r\n"
-		"	m_fmCBI.fans_number = sc->fans_number;\r\n"
-		"	m_fmCBI.fans_intimate = sc->fans_intimate;\r\n"
-		"	m_fmCBI.shirt_index = sc->shirt_index;\r\n"
-		"	m_fmCBI.shirt_host_color1 = sc->shirt_host_color1;\r\n"
-		"	m_fmCBI.shirt_host_color2 = sc->shirt_host_color2;\r\n"
-		"	m_fmCBI.shirt_visiting_color1 = sc->shirt_visiting_color1;\r\n"
-		"	m_fmCBI.shirt_visiting_color2 = sc->shirt_visiting_color2;\r\n"
-		"	m_fmCBI.flag_index = sc->flag_index;\r\n"
-		"	m_fmCBI.flag_color1 = sc->flag_color1;\r\n"
-		"	m_fmCBI.flag_color2 = sc->flag_color2;\r\n"
-		"	m_fmCBI.logo_index = sc->logo_index;\r\n";
+	const char * pszReplace = 
+"	m_fmCBI.createdate = sc->createdate;\r\n"
+"	m_fmCBI.money = sc->money;\r\n"
+"	m_fmCBI.fame = sc->fame;\r\n"
+"	m_fmCBI.fans_number = sc->fans_number;\r\n"
+"	m_fmCBI.fans_intimate = sc->fans_intimate;\r\n"
+"	m_fmCBI.shirt_index = sc->shirt_index;\r\n"
+"	m_fmCBI.shirt_host_color1 = sc->shirt_host_color1;\r\n"
+"	m_fmCBI.shirt_host_color2 = sc->shirt_host_color2;\r\n"
+"	m_fmCBI.shirt_visiting_color1 = sc->shirt_visiting_color1;\r\n"
+"	m_fmCBI.shirt_visiting_color2 = sc->shirt_visiting_color2;\r\n"
+"	m_fmCBI.flag_index = sc->flag_index;\r\n"
+"	m_fmCBI.flag_color1 = sc->flag_color1;\r\n"
+"	m_fmCBI.flag_color2 = sc->flag_color2;\r\n"
+"	m_fmCBI.logo_index = sc->logo_index;\r\n";
 
 	std::string strResult;
 	VFX::re_pattern<> rep;
 	rep.parse("{m_fmCBI[^ =]+} *= *{[^;]+}");
 	rep.replace(NULL,
-		"\\2 = \\1",
-		pszReplace,
-		strResult,
-		VFX::rf_zero);
+			"\\2 = \\1",
+			pszReplace,
+			strResult,
+			VFX::rf_zero);
 	std::cout << strResult;
-}
-
-void test_re_get_comment()
-{
-	std::string str(
-		"\"\\r\"							// return\r\n"
-		"\"\\t\"							// tab\r\n"
-		"\"\\r?\\n\"							// newline\r\n"
-		"\"[a-zA-Z0-9]\"						// alpha numeric\r\n"
-		"\"[ \\t]\"							// white space (blank)\r\n"
-		"\"[a-zA-Z]\"						// alpha\r\n"
-		"\"[0-9]\"							// digit\r\n"
-		"\"[0-9a-fA-F]\"						// hex digit\r\n"
-		"\"(\\\"[^\\\"]*\\\")|(\'[^\']*\')\"				// quoted string\r\n"
-		"/*no implement*/\"test\"					// all right\r\n"
-		"\"[a-zA-Z]+\"						// simple word\r\n"
-		"\"[0-9]+\"						// integer\r\n"
-	);
-	std::cout << str << std::endl;
-	std::cout << _get_cpp_string_with_comment((unsigned char*)str.c_str());
-	std::cout << std::endl;
-}
-
-//去掉C++中的注释
-void test_re_remove_comment(const char* path)
-{
-	//分析表达式
-	re_pattern_mb	rp;
-	rp.parse((unsigned char*)"{\\s}|{(\\o|\\p)}");
-	//打开文件
-	std::ifstream	file(path, std::ios::in | std::ios::binary);
-	//得到文件长度
-	file.seekg(0, std::ios::end);
-	size_t nlength = file.tellg();
-	file.seekg(0, std::ios::beg);
-	//根据文件长度分配内存
-	unsigned char* const pbuff = new unsigned char[nlength + 1];
-	//读文件
-	file.read((char*)pbuff, nlength);
-	pbuff[nlength] = 0;
-
-	//循环去掉注释
-	unsigned char* pend = pbuff + nlength;
-	re_result_mb	rr;
-	for (unsigned char* p = pbuff; p < pend; )
-	{
-		if (VFX::ree_ok == rp.match(p, rr, pend))
-		{
-			//匹配到表达式
-			//输出被跳过的字符
-			std::cout.write((char*)p, rr.m_Match.begin - p);
-			//输出字符串(匹配\s的组)
-			if (rr[0].id == 0)
-				std::cout.write((char*)rr[0].begin, rr[0].end - rr[0].begin);
-			//移动指针
-			p = (unsigned char*)rr.m_Match.end;
-		}
-		else
-		{
-			//无匹配，输出剩余的字符
-			std::cout.write((char*)p, pend - p);
-			//结束
-			p = pend;
-		}
-	}
-	//清理
-	delete[] pbuff;
-}
-
-int main(int argc, char* argv[])
-{
-	if (argc > 1)
-		test_re_remove_comment(argv[1]);
-	test_re_swap();
-	test_re_get_comment();
 
 	return 0;
 }
+
+//int main()
+//{
+//
+//	std::string str(
+//			"\"\\r\"							// return\r\n"
+//			"\"\\t\"							// tab\r\n"
+//			"\"\\r?\\n\"							// newline\r\n"
+//			"\"[a-zA-Z0-9]\"						// alpha numeric\r\n"
+//			"\"[ \\t]\"							// white space (blank)\r\n"
+//			"\"[a-zA-Z]\"						// alpha\r\n"
+//			"\"[0-9]\"							// digit\r\n"
+//			"\"[0-9a-fA-F]\"						// hex digit\r\n"
+//			"\"(\\\"[^\\\"]*\\\")|(\'[^\']*\')\"				// quoted string\r\n"
+//			"/*no implement*/\"test\"					// all right\r\n"
+//			"\"[a-zA-Z]+\"						// simple word\r\n"
+//			"\"[0-9]+\"						// integer\r\n"
+//		);
+//	std::cout << str << std::endl;
+//	std::cout << _get_cpp_string_with_comment((unsigned char *)str.c_str());
+//	std::cout << std::endl;
+//
+//    return 0;
+//}
+//
+////去掉C++中的注释
+//int main3(int argc,char * argv[])
+//{
+//	//参数要多于一个
+//	if(argc < 2)
+//		return 0;
+//	//分析表达式
+//	re_pattern_mb	rp;
+//	rp.parse((unsigned char *)"{\\s}|{(\\o|\\p)}");
+//	//打开文件
+//	std::ifstream	file(argv[1],std::ios::in|std::ios::binary);
+//	//得到文件长度
+//	file.seekg(0,std::ios::end);
+//	size_t nlength = file.tellg();
+//	file.seekg(0,std::ios::beg);
+//	//根据文件长度分配内存
+//	unsigned char * const pbuff = new unsigned char[nlength + 1];
+//	//读文件
+//	file.read((char *)pbuff,nlength);
+//	pbuff[nlength] = 0;
+//
+//	//循环去掉注释
+//	unsigned char * pend = pbuff + nlength;
+//	re_result_mb	rr;
+//	for(unsigned char * p = pbuff; p < pend; )
+//	{
+//		if(VFX::ree_ok == rp.match(p,rr,pend))
+//		{
+//			//匹配到表达式
+//			//输出被跳过的字符
+//			std::cout.write((char *)p,rr.m_Match.begin - p);
+//			//输出字符串(匹配\s的组)
+//			if(rr[0].id == 0)
+//				std::cout.write((char *)rr[0].begin,rr[0].end - rr[0].begin);
+//			//移动指针
+//			p = (unsigned char *)rr.m_Match.end;
+//		}
+//		else
+//		{
+//			//无匹配，输出剩余的字符
+//			std::cout.write((char *)p,pend - p);
+//			//结束
+//			p = pend;
+//		}
+//	}
+//	//清理
+//	delete [] pbuff;
+//	return 0;
+//}
